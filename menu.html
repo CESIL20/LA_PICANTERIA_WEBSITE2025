@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Carta - La Picantería</title>
+  <style>
+    /* ---------- RESET & BASE ---------- */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+           background: linear-gradient(rgba(0, 0, 0, 0.801), rgba(0, 0, 0, 0.534)), url(madera_fondo.jpeg) no-repeat center center fixed;
+           background-size: cover;
+           color: #ffffffee;
+      
+    }
+
+    /* ---------- NAVBAR (fijo) ---------- */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.37);
+      backdrop-filter: blur(6px);
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px;
+      z-index: 1200;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.45);
+    }
+
+    .nav-btn {
+      background: linear-gradient(180deg,#232423,#222423);
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: transform .12s ease, background .12s ease;
+    }
+    .nav-btn:hover { transform: translateY(-2px); background: linear-gradient(180deg,#d9dfda,#cbd8cb); }
+    .nav-btn:active { transform: translateY(0); }
+
+    /* ---------- LAYOUT ---------- */
+    .page {
+      max-width: 1330px;
+      margin: 10px auto;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      align-items: start;
+    }
+
+    .card {
+      background: rgba(0, 0, 0, 0);
+      box-shadow: 0 8px 26px rgba(0, 0, 0, 0);
+      backdrop-filter: blur(4px);
+      border-radius: 5px;
+      padding: 18px;
+      
+      
+    }
+    .modern-header {
+      display: flex;
+      justify-content: center;
+      padding: 30px 0; /* aumenta el padding vertical para crear más espacio */
+      background: rgba(0, 0, 0, 0.6);
+      margin-top: 20px; /* empuja el header hacia abajo, por debajo del navbar fijo */
+      margin-bottom: 0; /* espacio hacia el contenido siguiente */
+    }
+
+    .header-content {
+     display: flex;
+     justify-content: center;
+    }
+
+    .logo {
+     display: inline-block;
+    }
+    .logo img {
+     width: 300px;
+     height: auto; /* mejor que fijar height, para mantener proporción */
+     border-radius: 0;
+     border: 0 solid var(--primary);
+    }
+    .main-title, .section-title {
+      text-align: left;
+      font-size: 40px;
+    }
+    /* ---------- MENU GRID & ITEMS ---------- */
+    .pesca-grid, .menu { display: grid; grid-template-columns:repeat(2, 1fr); gap: 30px; margin-bottom: 20px; border-bottom: 3px solid rgba(255,255,255,0.06); }
+
+    .pesca-item, .menu-item {
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .pesca-item:last-child, .menu-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .item-header { display:flex; justify-content: space-between; align-items: baseline; gap:8px; flex-wrap:wrap; }
+    .item-name { font-weight:900; color:#fff; font-size:1rem; }
+    .item-price { color:#bbbebb; font-weight:900; white-space:nowrap; }
+    .item-desc { margin-top:6px; color:#d8e7d3; font-size:.92rem; }
+
+    /* PREPARATIONS TWO-COLUMN ON DESKTOP */
+    .prep-list { column-count:2; column-gap:26px; margin:12px 0 18px;border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+    .prep-item { break-inside: avoid; margin-bottom:10px; }
+    .prep-name { font-weight:900; color:#fff; margin-bottom:4px; }
+    .prep-desc { color:#dbe9d9; font-size:.92rem; }
+
+    .quote { text-align:center; font-style:italic; font-size:1.05rem; margin:22px 0; color:#eef7ee; padding:12px 6px; border-top:1px solid rgba(255,255,255,0.04); border-bottom:1px solid rgba(255,255,255,0.04); }
+
+    /* ---------- SMALL TEXT ---------- */
+    .small { font-size:.88rem; color:#cfe9c7; opacity:.95; }
+
+    /* ---------- ANCHOR TARGET OFFSET (for sticky navbar) ---------- */
+    .anchor-target { display:block; position: relative; top: -68px; visibility: hidden; }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 1024px) {
+      .page { grid-template-columns: 1fr; padding: 12px; }
+      .prep-list { column-count:1; }
+    }
+
+    @media (max-width: 480px) {
+      body { padding-top: 10px; } /* extra top space for mobile navbar */
+      .nav-btn { padding: 5px 9px; font-size:.68rem; }
+      .card { padding: 14px; }
+      .modern-header {margin-top: 10px; }
+      .logo img {width: 180px;}
+      .main-title, .section-title {text-align: left; font-size: 20px;}
+      .item-name { font-size: 1rem; }
+      .item-price { font-size: .95rem; color:#bbbebb; }
+      .item-desc { font-size:.86rem; }
+    }
+
+    @media (max-width: 375px) {
+      .nav-btn { padding:3px 5px; font-size:.55rem; }
+      .item-name { font-size:.95rem; }
+      .item-price { font-size:.88rem; }
+      .item-desc { font-size:.82rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" aria-label="Navegación de la carta">
+    <button class="nav-btn" onclick="document.getElementById('pesca').scrollIntoView({behavior:'smooth'});">Pesca</button>
+    <button class="nav-btn" onclick="document.getElementById('concepto').scrollIntoView({behavior:'smooth'});">Concepto</button>
+    <button class="nav-btn" onclick="document.getElementById('carta').scrollIntoView({behavior:'smooth'});">Carta</button>
+    <button class="nav-btn" onclick="document.getElementById('sanguches').scrollIntoView({behavior:'smooth'});">Sánguches</button>
+    <button class="nav-btn" onclick="document.getElementById('postres').scrollIntoView({behavior:'smooth'});">Postres</button>
+    <button class="nav-btn" onclick="document.getElementById('bebidas').scrollIntoView({behavior:'smooth'});">Bebidas</button>
+    <button class="nav-btn" onclick="document.getElementById('sin-alcohol').scrollIntoView({behavior:'smooth'});">Sin Alcohol</button>
+  </nav>
+
+  
+    <header class="modern-header">
+  <div class="header-content">
+    <a href="#" class="logo">
+      <img src="pikalogo.png" alt="La Picantería" onerror="this.src='https://placehold.co/60x60/8B7355/FFFFFF?text=LP'">
+    </a>
+  </div>
+</header>
+
+    <!-- LEFT COLUMN -->
+    <section class="card left-column">
+      <!-- PESCA -->
+      <span id="pesca" class="anchor-target"></span>
+      <br><h2 class="main-title">LA PESCA DEL DÍA</h2>
+      <p class="note">Tener en cuenta que la disponibilidad y los precios están sujetos a cambios diarios según la pesca de día.</p>
+
+       <br><div class="pesca-grid" aria-labelledby="pesca">
+        <div class="pesca-item"><div class="item-header"><span class="item-name">TRAMBOYO</span><span class="item-price">s/. 120</span></div></div>
+        <div class="pesca-item"><div class="item-header"><span class="item-name">PEJESAPO</span><span class="item-price">s/. 150</span></div></div>
+        <div class="pesca-item"><div class="item-header"><span class="item-name">CACHEMA</span><span class="item-price">s/. 150</span></div></div>
+        <div class="pesca-item"><div class="item-header"><span class="item-name">FORTUNO</span><span class="item-price">s/. 160</span></div></div>
+        <div class="pesca-item"><div class="item-header"><span class="item-name">ROBALO</span><span class="item-price">s/. 170</span></div></div>
+        <div class="pesca-item"><div class="item-header"><span class="item-name">RINCHIN</span><span class="item-price">s/. 170</span></div></div>
+        <div class="pesca-item"><div class="item-header"><span class="item-name">CABRILLA</span><span class="item-price">s/. 175</span></div></div>
+        <div class="pesca-item"><div class="item-header"><span class="item-name">PLUMA</span><span class="item-price">s/. 180</span></div></div>
+        <div class="pesca-item"><div class="item-header"><span class="item-name">CORVINA</span><span class="item-price">s/. 185</span></div></div>
+        <div class="pesca-item"><div class="item-header"><span class="item-name">CHITA</span><span class="item-price">s/. 185</span></div></div>
+        <div class="pesca-item"><div class="item-header"><span class="item-name">MERO ROJO</span><span class="item-price">s/. 190</span></div></div>
+        <div class="pesca-item"><div class="item-header"><span class="item-name">LENGUADO</span><span class="item-price">s/. 200</span></div></div>
+      </div>
+   
+
+      <!-- CONCEPTO -->
+       <span id="concepto" class="anchor-target"></span>
+      <br><h2 class="section-title">NUESTRO CONCEPTO</h2>
+      <p class="note">De acuerdo con la elección de su pescado, escoja sus preparaciones.</p>
+
+      <div class="prep-list" aria-hidden="false">
+        <div class="prep-item"><div class="prep-name">CEVICHE DE PICANTERÍA</div><div class="prep-desc">Dados de pescado con leche de tigre y camote glaseado.</div></div>
+        <div class="prep-item"><div class="prep-name">JALADITO MOCHE</div><div class="prep-desc">Láminas de pescado curadas en sal, leche de tigre a base de ají amarillo.</div></div>
+        <div class="prep-item"><div class="prep-name">ESTOFADO</div><div class="prep-desc">Guiso de laureles, arvejas y aceite de oliva.</div></div>
+        <div class="prep-item"><div class="prep-name">ESCABECHE</div><div class="prep-desc">Salsa a base de vinagre, cebollas y aceitunas.</div></div>
+        <div class="prep-item"><div class="prep-name">JALEA LIMEÑA</div><div class="prep-desc">Trozos de pescado crocante.</div></div>
+        <div class="prep-item"><div class="prep-name">JALEA CHICLAYANA</div><div class="prep-desc">Pescado adobado, dorado en vinagre y achiote.</div></div>
+        <div class="prep-item"><div class="prep-name">A LA PARRILLA</div><div class="prep-desc">Salsa especial de la casa a base de ají amarillo.</div></div>
+        <div class="prep-item"><div class="prep-name">DULCE Y PICOSA</div><div class="prep-desc">Tamarindo picante y vegetales orientales.</div></div>
+        <div class="prep-item"><div class="prep-name">AL VAPOR</div><div class="prep-desc">Concentrado de kion y salsa de soja.</div></div>
+        <div class="prep-item"><div class="prep-name">SALTEADO AL WOK</div><div class="prep-desc">Dados de pescado salteados al wok con salsa de soja.</div></div>
+        <div class="prep-item"><div class="prep-name">ARROZ FRITO</div><div class="prep-desc">Arroz salteado, salsa de soja, ajonjolí y vegetales.</div></div>
+        <div class="prep-item"><div class="prep-name">CHILCANO HUMEANTE</div><div class="prep-desc">Concentrado de pescado.</div></div>
+        <div class="prep-item"><div class="prep-name">SUDADO MONSEFU HOT</div><div class="prep-desc">Caldo de pescado a base de ají amarillo, culantro, cebollas y tomates.</div></div>
+        <div class="prep-item"><div class="prep-name">AJO Y MANTEQUILLA</div><div class="prep-desc">Emulsión de mantequilla, vinagre, ajíes y ajos crocantes.</div></div>
+      </div>
+
+      <!-- CARTA -->
+      <span id="carta" class="anchor-target"></span>
+<h2 class="section-title">TAMBIÉM PUEDE ORDENER A LA CARTA</h2>
+
+<div class="menu"></div>
+<div class="menu-item">
+    <div class="item-header"><span class="item-name">NAVAJAS</span><span class="item-price">s/. 10(und)</span></div>
+    <div class="item-desc">Parrilla(cebollines o salsa amarilla), ceviche, tortilla.</div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-header"><span class="item-name">ALMEJAS</span><span class="item-price">s/. 15(und)</span></div>
+    <div class="item-desc">Ceviche, chalaca o tortilla.</div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-header"><span class="item-name">CONCHAS DE ABANICO</span><span class="item-price">s/. 15(und)</span></div>
+    <div class="item-desc">A la parrilla, ceviche o tortilla.</div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-header"><span class="item-name">OSTRA</span><span class="item-price">s/. 20(und)</span></div>
+    <div class="item-desc">A la parrilla, ceviche o tortilla.</div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-header"><span class="item-name">LANGOSTINO JUMBO</span><span class="item-price">s/. 25 (100g)  /  s/. 35 (150g)</span></div>
+    <div class="item-desc">A la parrilla, ensalada o ajo y mantequilla.</div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-header"><span class="item-name">TORTILLAS PICANTERAS</span><span class="item-price">s/. 35</span></div>
+    <div class="item-desc">Tortilla andina: Papas, cebollas glaseadas. Todo se puede atortillar.</div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-header"><span class="item-name">CANGREJO POPEYE</span><span class="item-price">s/. 39 (unidad)</span></div>
+    <div class="item-desc">Ceviche, Sudado o Chilcano.</div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-header"><span class="item-name">CAU-CAU 4H</span><span class="item-price">s/. 55</span></div>
+    <div class="item-desc">Mondongo de res con papa, zanahoria, ají amarillo y hierba buena.</div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-header"><span class="item-name">ENSALADA DE PAPAS PERUANAS</span><span class="item-price">s/. 59</span></div>
+    <div class="item-desc">Papas peruanas con pimientos, cebollas, pepinillos encurtidos, mayonesa de oliva.</div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-header"><span class="item-name">ROCOTO HECHO CHUPE</span><span class="item-price">s/. 69</span></div>
+    <div class="item-desc">Rocoto relleno de lomo fino sumergido en chupe de carne de res, queso paria y huevo escalfado.</div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-header"><span class="item-name">ERIZOS</span><span class="item-price">s/. 75</span></div>
+    <div class="item-desc">Tortilla, ceviche o al natural.</div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-header">
+      <span class="item-name">CEVICHE</span>
+      <span class="item-price">s/. 79 *</span>
+    </div>
+    <div class="item-desc">
+      Dados de pescado con leche de tigre y camote glaseado.
+      <br><span class="small">* Según pesca del día.</span>
+    </div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-header">
+      <span class="item-name">JALADITO</span>
+      <span class="item-price">s/. 79 *</span>
+    </div>
+    <div class="item-desc">
+      Técnica Moche especial, pescado curado en sal.
+      <br><span class="small">* Según pesca del día.</span>
+      
+    </div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-header"><span class="item-name">PULPO</span><span class="item-price">s/. 79</span></div>
+    <div class="item-desc">200g a la parrilla o con ensalada de papas peruanas.</div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-header"><span class="item-name">PARIHUELA</span><span class="item-price">s/. 79</span></div>
+    <div class="item-desc">Concentrado de cangrejos y mariscos.</div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-header"><span class="item-name">LOMO SALTADO</span><span class="item-price">s/. 79</span></div>
+    <div class="item-desc">Lomo fino salteado con cebolla, tomate, papas crocantes y arroz.</div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-header"><span class="item-name">PATO 1/4 DE PIEZA</span><span class="item-price">s/. 85</span></div>
+    <div class="item-desc">Asado lentamente: ceviche, estofado o chaufa.</div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-header"><span class="item-name">ARROZ CON MARISCOS</span><span class="item-price">s/. 85</span></div>
+    <div class="item-desc">Arroz graneado con fondo de cangrejo y mariscos del día.</div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-header"><span class="item-name">COSTILLAR DE RES</span><span class="item-price">s/. 160</span></div>
+    <div class="item-desc">1.5kgs de res de primera calidad en cocción lenta.<br>Asado, dorado, braseado y escabechado.</div>
+  </div>
+
+  <div class="menu-item">
+    <div class="item-header"><span class="item-name">LANGOSTA PUERTO ETEN</span><span class="item-price">s/. 290 (kg)</span></div>
+    <div class="item-desc">Ceviche, parrilla o ajo y mantequilla.</div>
+  </div>
+</div>
+</section>
+
+    <!-- RIGHT COLUMN -->
+    <aside class="card right-column">
+      <span id="sanguches" class="anchor-target"></span>
+      <h2 class="section-title">NUESTROS SÁNGUCHES</h2>
+
+      <div class="menu"></div>
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">SÁNGUCHE DE LA PLAYA</span><span class="item-price">s/. 45</span></div>
+          <div class="item-desc">Pescado, cebollines, oro verde y mayonesa de oliva en pan baguette de la casa.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">ROLLING STONE</span><span class="item-price">s/. 45</span></div>
+          <div class="item-desc">Lengua de ternera a la parrilla, cebollines y mayonesa de oliva.</div>
+        </div>
+      </div>
+
+      <br><span id="postres" class="anchor-target"></span>
+      <h2 class="section-title">POSTRES DE LA PICANTERÍA</h2>
+
+      <div class="menu"></div>
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">FLOR DE MAMEY</span><span class="item-price">s/. 15</span></div>
+          <div class="item-desc">Helado cremoso de mamey con miel de cerveza "La Pelirroja".</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">PALETAS DE HELADO</span><span class="item-price">s/. 15</span></div>
+          <div class="item-desc">Según estación.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">CREMA ASADA</span><span class="item-price">s/. 25</span></div>
+          <div class="item-desc">Leche asada con crema volteada, miel de ciruela y obleas de cacao.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">MISTI</span><span class="item-price">s/. 35</span></div>
+          <div class="item-desc">Fusión de alfajor y queso helado, con miel de cerveza "LA PELIRROJA" y algodón de azúcar.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">CACAO Y LÁGRIMAS DE TOFFEE</span><span class="item-price">s/. 39</span></div>
+          <div class="item-desc">Pastel tibio con centro cremoso, helado de vainilla, pecanas y toffee salado.</div>
+        </div>
+      </div>
+
+      <div class="quote">"Para vivir el presente<br>hay que<br>beberse el pasado"</div>
+
+      <br><span id="bebidas" class="anchor-target"></span>
+      <h2 class="section-title">BEBIDAS</h2>
+
+      <div class="menu"></div>
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">JUANA JORA</span><span class="item-price">s/. 10*</span></div>
+          <div class="item-desc">Chicha de jora natural. *Consultar disponibilidad:membrillo y maiz morado.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">ORO LIQUIDO</span><span class="item-price">s/. 20(chop o bot)</span></div>
+          <div class="item-desc"><strong>Cerveza de alta gama.</strong></div> malteadas alemanas, levadura y lúpulos americanos (18 ibu) .</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">LA PELIRROJA</span><span class="item-price">s/. 30(chop) / s/. 35(bot)</span></div>
+          <div class="item-desc"><strong>Cerveza de alta gama.</strong></div>Cebadas malteadas alemanas, levadura y lúpulos americanos (40 ibu).
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">CALIENTITO PICANTERO</span><span class="item-price">s/. 30</span></div>
+          <div class="item-desc">Infusión de té, canela y hierba luisa; maracuyá y naranja.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">BLANCO DE VERANO</span><span class="item-price">s/. 30</span></div>
+          <div class="item-desc">Vino blanco, soda de limón.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">ALGARROBINA</span><span class="item-price">s/. 30</span></div>
+          <div class="item-desc">Pisco, algarrobina y leche.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">CHILCANO CLÁSICO</span><span class="item-price">s/. 35</span></div>
+          <div class="item-desc">500ml – Pisco de la casa "CHOLO NAMBER GUAN", zumo de limón, bitter y ginger ale.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">CHOLO ANTONI</span><span class="item-price">s/. 35</span></div>
+          <div class="item-desc">Esfera de lima, pisco y agua tónica.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">APEROL SPRITZ</span><span class="item-price">s/. 35</span></div>
+          <div class="item-desc">Aperol, proseco y agua con gas.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">NEGRONI</span><span class="item-price">s/. 35</span></div>
+          <div class="item-desc">Gin, vermouth rosso y campari.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">CHILCANO MACERADO</span><span class="item-price">s/. 40</span></div>
+          <div class="item-desc">500ml – Macerado en frutas, cortezas y/o hojas; zumo de limón, bitter y ginger ale.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">PISCO SOUR CLÁSICO</span><span class="item-price">s/. 40</span></div>
+          <div class="item-desc">500ml – Pisco de la casa, zumo de limón, clara de huevo y bitter.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">SOL Y SOMBRA</span><span class="item-price">s/. 40</span></div>
+          <div class="item-desc">Licor de guinda, jugo de naranja y ginger ale.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">BLOODY PICANTERO</span><span class="item-price">s/. 40</span></div>
+          <div class="item-desc">Jugo de ceviche, pisco y pimienta negra.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">MEZCLA DEL MEJOR CHOLO</span><span class="item-price">s/. 40</span></div>
+          <div class="item-desc">Jugo de ceviche, pisco y pimienta negra.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">SANGRIA ANDINA</span><span class="item-price">s/. 40</span></div>
+          <div class="item-desc">Vino tinto de alta gama mcaerado de naranja, jarabe de canela y juana jora de maiz morado.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">PISCO SOUR MACERADO</span><span class="item-price">s/. 45</span></div>
+          <div class="item-desc">500ml – Pisco macerado en frutas, limón, clara de huevo.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">PALOMA</span><span class="item-price">s/. 45</span></div>
+          <div class="item-desc">Tequila Don Julio Blanco, limón, soda de toronja.</div>
+        </div> 
+       </div>
+
+      <br><span id="sin-alcohol" class="anchor-target"></span>
+      <h2 class="section-title">SIN ALCOHOL</h2>
+      <div class="menu"></div>
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">LIMONADA DE MANDARINA</span><span class="item-price">s/. 16</span></div>
+          <div class="item-desc">Mandarina, zumo de limón y agua gasificada o natural.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">LIMONADA DE TORONJA</span><span class="item-price">s/. 16</span></div>
+          <div class="item-desc">Toronja, zumo de limón y agua gasificada o natural.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">LIMONADA GINGER</span><span class="item-price">s/. 16</span></div>
+          <div class="item-desc">Limón, jengibre, cúrcuma y agua gasificada o natural.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">LIMA LIMÓN</span><span class="item-price">s/. 18</span></div>
+          <div class="item-desc">Jugo de lima, zumo de limón y agua gasificada o natural.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">LIMONADA DE JAMAICA</span><span class="item-price">s/. 20</span></div>
+          <div class="item-desc">Infusión de flor de jamaica, naranja, limón y agua gasificada o natural.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">LIMONADA CON COCO</span><span class="item-price">s/. 20</span></div>
+          <div class="item-desc">Limonada con crema de coco artesanal, naranja, limón y lima.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">BREBAJE PICANTERO</span><span class="item-price">s/. 20</span></div>
+          <div class="item-desc">Infusión de té negro, muña y eucalipto; almíbar de anís estrella, maracuyá y dash de limón.</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="item-header"><span class="item-name">JUGOS NATURALES</span><span class="item-price">s/. consultar</span></div>
+          <div class="item-desc">Frutas naturales y de temporada.</div>
+        </div>
+      </div>
+    </aside>
+
+
+  <script>
+    // If user navigates via hash links (e.g., external), offset scroll for sticky navbar
+    (function() {
+      function offsetAnchor() {
+        if(location.hash.length > 0) {
+          window.scrollTo(window.scrollX, window.scrollY - 70);
+        }
+      }
+      window.addEventListener("hashchange", offsetAnchor);
+      window.setTimeout(offsetAnchor, 1);
+    })();
+  </script>
+</body>
+</html>
